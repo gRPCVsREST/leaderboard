@@ -1,0 +1,7 @@
+{
+  "total": 5,
+  "lines": [
+    {"userId": "Tarzan", "totalVotes": 3, "score": 1.0},
+    {"userId": "Jane", "totalVotes": 2, "score": 0.0}
+  ]
+}
