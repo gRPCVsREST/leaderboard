@@ -69,7 +69,11 @@ task pushDocker(type: Exec) {
 }
 
 task deploy(type: Exec) {
-    commandLine 'kubectl', 'create', '-f', 'k8s/leaderboard.yaml'
+    commandLine 'kubectl', 'apply', '-f', 'k8s/leaderboard.yaml'
+}
+
+task redeploy(type: Exec) {
+    commandLine 'kubectl', 'apply', '-f', 'k8s/leaderboard.yaml'
 }
 
 task undeploy(type: Exec) {

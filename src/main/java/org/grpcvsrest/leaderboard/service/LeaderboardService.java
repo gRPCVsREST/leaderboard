@@ -7,10 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -41,7 +38,7 @@ public class LeaderboardService {
     }
 
     public Leaderboard getLeaderboard(String category) {
-        Map<String, UserVotes> currentVotes = ImmutableMap.copyOf(votesByCategory.get(category));
+        Map<String, UserVotes> currentVotes = ImmutableMap.copyOf(votesByCategory.get(category) == null ? new HashMap<>() : votesByCategory.get(category));
 
         List<Leaderboard.Line> rawLines = currentVotes.entrySet().stream()
                 .map(e -> new Leaderboard.Line(

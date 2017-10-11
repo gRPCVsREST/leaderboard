@@ -18,6 +18,8 @@ spec:
           env:
             - name: leaderboard_url
               value: "http://leaderboard:8080/"
+            - name: foobar
+              value: "1"
 ---
 apiVersion: v1
 kind: Service
@@ -31,4 +33,4 @@ spec:
    - port: 8080
      targetPort: 8080
      protocol: TCP
----
+
