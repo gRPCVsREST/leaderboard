@@ -17,6 +17,14 @@ public class LeaderboardController {
         this.leaderboardService = leaderboardService;
     }
 
+    @PutMapping("/leaderboard/vote/{category}/{user_id}/{guessed}")
+    public void acceptVote(
+            @PathVariable("category") String category,
+            @PathVariable("user_id") String userId,
+            @PathVariable("guessed") boolean guessed) {
+        leaderboardService.addVote(category, userId, guessed);
+    }
+
     @GetMapping("/leaderboard/{category}")
     public Leaderboard leaderboard(@PathVariable("category") String category) {
         return new Leaderboard(
