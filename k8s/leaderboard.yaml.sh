@@ -1,3 +1,5 @@
+#!/bin/bash
+cat <<YAML
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
@@ -19,7 +21,7 @@ spec:
             - name: leaderboard_url
               value: "http://leaderboard:8080/"
             - name: foobar
-              value: "1"
+              value: "$(date +%s)"
 ---
 apiVersion: v1
 kind: Service
@@ -33,4 +35,4 @@ spec:
    - port: 8080
      targetPort: 8080
      protocol: TCP
-
+YAML
