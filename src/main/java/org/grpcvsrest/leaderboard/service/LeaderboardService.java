@@ -65,7 +65,7 @@ public class LeaderboardService {
                 .collect(Collectors.toList());
 
         rawLines.sort(Comparator.comparingInt(l -> -l.getTotalVotes()));
-        if (rawLines.size() > MAX_USERS) {
+        if (rawLines.size() > MAX_USERS + 1) {
             rawLines = rawLines.stream().limit((long) (rawLines.size() * 0.8)).collect(Collectors.toList());
         }
 

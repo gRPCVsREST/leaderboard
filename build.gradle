@@ -6,8 +6,8 @@ buildscript {
     }
     dependencies {
         classpath 'com.bmuschko:gradle-docker-plugin:3.1.0'
+        classpath "io.spring.gradle:dependency-management-plugin:0.5.2.RELEASE"
     }
-
 }
 plugins {
     id 'java'
@@ -16,6 +16,14 @@ plugins {
 }
 
 apply plugin: 'com.bmuschko.docker-remote-api'
+apply plugin: 'io.spring.dependency-management'
+
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.cloud:spring-cloud-sleuth:1.2.5.RELEASE'
+    }
+}
 
 repositories {
     jcenter()
@@ -27,6 +35,8 @@ repositories {
 dependencies {
     compile project(':grpc-api')
     compile 'org.springframework.boot:spring-boot-starter-web'
+    compile 'org.springframework.cloud:spring-cloud-sleuth-zipkin'
+    compile 'org.springframework.cloud:spring-cloud-starter-sleuth'
     compile 'com.google.guava:guava:23.0'
     compile 'io.grpc:grpc-all:1.6.1'
     compile 'io.zipkin.brave:brave-instrumentation-grpc:4.9.1'

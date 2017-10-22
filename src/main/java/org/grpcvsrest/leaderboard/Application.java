@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.sleuth.SpanAdjuster;
 import org.springframework.context.annotation.Bean;
 import zipkin2.reporter.AsyncReporter;
 import zipkin2.reporter.urlconnection.URLConnectionSender;
@@ -25,6 +26,11 @@ public class Application {
     private LeaderboardGrpcEndpoint grpcEndpoint;
     @Autowired
     private GrpcTracing grpcTracing;
+
+    @Bean
+    public SpanAdjuster customSpanAdjuster(@Value("${spring.application.name}") String appName) {
+        return span -> span.toBuilder().name("#" + appName + "/" + span.getName().replace("http:/", "")).build();
+    }
 
     @PostConstruct
     public void startGrpcServer() throws IOException {
