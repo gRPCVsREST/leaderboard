@@ -2,6 +2,7 @@ package org.grpcvsrest.leaderboard.service;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
+import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -21,8 +23,20 @@ public class LeaderboardService {
 
     private final ConcurrentMap<String, ConcurrentMap<String, UserVotes>> votesByCategory = new ConcurrentHashMap<>();
     private final AtomicInteger totalVotes = new AtomicInteger(0);
+    private final AtomicBoolean broken = new AtomicBoolean(false);
+
+    public void clear() {
+        votesByCategory.clear();
+    }
 
     public void addVote(String category, String userId, boolean rightGuess) {
+        if (broken.get()) {
+            try {
+                Thread.sleep(700);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
         ConcurrentMap<String, UserVotes> newMap = new ConcurrentHashMap<>();
         ConcurrentMap<String, UserVotes> existingMap = votesByCategory.putIfAbsent(category, newMap);
         ConcurrentMap<String, UserVotes> userVoteMap = existingMap != null ? existingMap : newMap;
@@ -62,6 +76,14 @@ public class LeaderboardService {
         List<Leaderboard.Line> topFive = rawLines.stream().limit(MAX_USERS).collect(Collectors.toList());
         return new Leaderboard(totalVotes.get(), topFive);
 
+    }
+
+    public void breakService() {
+        broken.set(true);
+    }
+
+    public void unbreak() {
+        broken.set(false);
     }
 
     private static class UserVotes {

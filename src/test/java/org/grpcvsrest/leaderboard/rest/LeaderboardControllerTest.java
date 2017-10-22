@@ -2,6 +2,7 @@ package org.grpcvsrest.leaderboard.rest;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import org.grpcvsrest.leaderboard.grpc.LeaderboardGrpcEndpoint;
 import org.grpcvsrest.leaderboard.service.Leaderboard;
 import org.grpcvsrest.leaderboard.service.LeaderboardService;
 import org.junit.Test;
@@ -31,6 +32,9 @@ public class LeaderboardControllerTest {
     private MockMvc mockMvc;
     @MockBean
     private LeaderboardService leaderboardService;
+    @MockBean
+    private LeaderboardGrpcEndpoint grpcEndpoint;
+
 
     @Test
     public void testLeaderboard() throws Exception {
