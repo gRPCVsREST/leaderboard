@@ -17,9 +17,8 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
+            - containerPort: 8090
           env:
-            - name: leaderboard_url
-              value: "http://leaderboard:8080/"
             - name: foobar
               value: "$(date +%s)"
 ---
@@ -35,4 +34,9 @@ spec:
    - port: 8080
      targetPort: 8080
      protocol: TCP
+     name: rest
+   - port: 8090
+     targetPort: 8090
+     protocol: TCP
+     name: grpc
 YAML

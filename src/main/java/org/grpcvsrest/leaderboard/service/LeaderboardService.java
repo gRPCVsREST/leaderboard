@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 public class LeaderboardService {
 
     private final static Logger LOG = LoggerFactory.getLogger(LeaderboardService.class);
+    private static final int MAX_USERS = 5;
 
     private final ConcurrentMap<String, ConcurrentMap<String, UserVotes>> votesByCategory = new ConcurrentHashMap<>();
     private final AtomicInteger totalVotes = new AtomicInteger(0);
@@ -38,7 +39,8 @@ public class LeaderboardService {
     }
 
     public Leaderboard getLeaderboard(String category) {
-        Map<String, UserVotes> currentVotes = ImmutableMap.copyOf(votesByCategory.get(category) == null ? new HashMap<>() : votesByCategory.get(category));
+        Map<String, UserVotes> currentVotes = ImmutableMap.copyOf(votesByCategory.get(category) == null
+                ? new HashMap<>() : votesByCategory.get(category));
 
         List<Leaderboard.Line> rawLines = currentVotes.entrySet().stream()
                 .map(e -> new Leaderboard.Line(
@@ -48,16 +50,17 @@ public class LeaderboardService {
                 )
                 .collect(Collectors.toList());
 
-        Collections.sort(rawLines, Comparator.comparingInt(l -> -l.getTotalVotes()));
-        if (rawLines.size() > 6) {
-            rawLines = rawLines.stream().limit((long) (rawLines.size()*0.8)).collect(Collectors.toList());
+        rawLines.sort(Comparator.comparingInt(l -> -l.getTotalVotes()));
+        if (rawLines.size() > MAX_USERS) {
+            rawLines = rawLines.stream().limit((long) (rawLines.size() * 0.8)).collect(Collectors.toList());
         }
 
         LOG.info("raw lines, without bottom 20% voters, {}", rawLines);
         Collections.sort(rawLines, Comparator.comparingDouble(l -> -l.getScore()));
         LOG.info("top score, {}", rawLines);
 
-        return new Leaderboard(totalVotes.get(), rawLines);
+        List<Leaderboard.Line> topFive = rawLines.stream().limit(MAX_USERS).collect(Collectors.toList());
+        return new Leaderboard(totalVotes.get(), topFive);
 
     }
 
