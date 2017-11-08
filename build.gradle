@@ -85,7 +85,3 @@ task pushDocker(type: Exec) {
 task deploy(type: Exec) {
     commandLine './k8s/deploy.sh'
 }
-
-task undeploy(type: Exec) {
-    commandLine 'kubectl', 'delete', '-f', 'k8s/leaderboard.yaml'
-}
