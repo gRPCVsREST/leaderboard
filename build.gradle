@@ -59,33 +59,4 @@ bootRepackage {
     mainClass = 'org.grpcvsrest.leaderboard.Application'
 }
 
-task buildImage(type: DockerBuildImage) {
-    dependsOn bootRepackage
-    inputDir = project.projectDir
-    tag = 'leaderboard'
-}
-
-
-task buildDocker(type: DockerBuildImage) {
-    dependsOn bootRepackage
-    inputDir = project.projectDir
-    tag = 'leaderboard:latest'
-}
-
-task tagDocker(type: Exec) {
-    dependsOn buildDocker
-    commandLine 'docker', 'tag', 'leaderboard:latest', 'gcr.io/alien-fold-180922/leaderboard:latest'
-}
-
-task pushDocker(type: Exec) {
-    dependsOn tagDocker
-    commandLine 'gcloud', 'docker', '--', 'push', 'gcr.io/alien-fold-180922/leaderboard:latest'
-}
-
-task deploy(type: Exec) {
-    commandLine './k8s/deploy.sh'
-}
-
-task undeploy(type: Exec) {
-    commandLine 'kubectl', 'delete', '-f', 'k8s/leaderboard.yaml'
-}
+apply from: 'https://raw.githubusercontent.com/gRPCVsREST/gradle-common/master/common.gradle'
