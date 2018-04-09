@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
         - name: leaderboard
-          image: gcr.io/alien-fold-180922/leaderboard:latest
+          image: gcr.io/$GCP_PROJECT/leaderboard:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
@@ -21,6 +21,10 @@ spec:
           env:
             - name: foobar
               value: "$(date +%s)"
+            - name: ZIPKIN_SERVICE_HOST
+              value: "zipkin"
+            - name: ZIPKIN_SERVICE_PORT
+              value: "9411"
 ---
 apiVersion: v1
 kind: Service
